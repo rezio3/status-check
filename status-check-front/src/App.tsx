@@ -3,6 +3,8 @@ import "./style/global.scss";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import LandingPageView from "./views/landing/LandingPageView";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { UserView } from "./views/UserView";
 
 const theme = createTheme({
   palette: {
@@ -21,15 +23,20 @@ const theme = createTheme({
   },
 });
 
+const queryClient = new QueryClient();
+
 function App() {
   return (
     <>
-      <ThemeProvider theme={theme}>
-        <div className="page-wrapper">
-          <NavBar />
-          <LandingPageView />
-        </div>
-      </ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider theme={theme}>
+          <div className="page-wrapper">
+            <NavBar />
+            <UserView />
+            <LandingPageView />
+          </div>
+        </ThemeProvider>
+      </QueryClientProvider>
     </>
   );
 }
