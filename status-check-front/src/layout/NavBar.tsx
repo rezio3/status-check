@@ -1,17 +1,16 @@
 import { Button, CircularProgress } from "@mui/material";
 import "./NavBar.scss";
 import Header from "../components/Header";
-import BuildIcon from "@mui/icons-material/Build";
 import { LoginModal } from "../views/loginModal/LoginModal";
 import { useState } from "react";
 import { useAuthUser, useLogoutMutation } from "../hooks/useAuth";
+import carStatusLogo from "../assets/logoCarStatus.svg";
+import Text from "../components/Text";
 
 const NavBar = () => {
   const [openLoginModal, setOpenLoginModal] = useState(false);
-
   const { data: authData, isLoading } = useAuthUser();
   const logoutMutation = useLogoutMutation();
-
   const isAuthenticated = authData?.authenticated;
 
   const handleOpenLoginModal = () => {
@@ -32,15 +31,13 @@ const NavBar = () => {
 
   return (
     <div className="nav-bar">
-      <div
-        className="container"
-        style={{ display: "flex", justifyContent: "space-between" }}
-      >
-        <div className="d-flex align-items-center">
-          <BuildIcon fontSize="large" />
-          <Header as="h2">StatusCheck</Header>
+      <div className="container d-flex justify-content-between align-items-center">
+        <div className="d-flex flex-column align-items-center">
+          <img src={carStatusLogo} alt="carLogo" />
+          <Header as="h2" className="mb-0">
+            Car status
+          </Header>
         </div>
-
         <div>
           {isLoading ? (
             <CircularProgress size={24} />
@@ -54,12 +51,15 @@ const NavBar = () => {
               Wyloguj
             </Button>
           ) : (
-            <Button variant="contained" onClick={handleOpenLoginModal}>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={handleOpenLoginModal}
+            >
               Zaloguj
             </Button>
           )}
         </div>
-
         <LoginModal isOpen={openLoginModal} close={handleCloseLoginModal} />
       </div>
     </div>

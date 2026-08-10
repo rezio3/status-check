@@ -1,16 +1,13 @@
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Paper,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Button } from "@mui/material";
 import Header from "../../components/Header";
-import DirectionsCarFilledIcon from "@mui/icons-material/DirectionsCarFilled";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { apiFetch } from "../../api/client";
+import CarFound from "./carFound/CarFound";
+import Text, { TextColor } from "../../components/Text";
+import SearchCarInput from "../../components/TextInput";
+import DirectionsCarFilledIcon from "@mui/icons-material/DirectionsCarFilled";
+import RoadMap from "./roadMap/RoadMap";
 
 type PublicCarData = {
   plateNumber: string;
@@ -42,96 +39,43 @@ const LandingPageView = () => {
       }}
     >
       <Header
-        as="h3"
-        style={{ marginBottom: "20px", fontSize: "28px", fontWeight: 400 }}
+        as="h1"
+        style={{ marginBottom: "20px", fontSize: "48px", fontWeight: 400 }}
       >
         Sprawdź status naprawy swojego auta
       </Header>
-      <Box
-        component="form"
-        onSubmit={handleSearch}
-        className="d-flex align-items-stretch gap-3"
-      >
-        <TextField
-          id="outlined-basic"
-          sx={{ width: "300px" }}
-          label={
-            <div className="d-flex align-items-center gap-2">
-              <DirectionsCarFilledIcon />
-              <span>Numer rejestracyjny</span>
-            </div>
-          }
-          variant="outlined"
-          value={plateNumberInputValue}
-          onChange={(e) => setPlateNumberInputValue(e.target.value)}
-          disabled={searchCarMutation.isPending}
+      <div className="d-flex gap-3" style={{ maxWidth: "100%" }}>
+        <SearchCarInput
+          inputValue={plateNumberInputValue}
+          setInputValue={setPlateNumberInputValue}
+          isPending={searchCarMutation.isPending}
+          label="Numer rejestracyjny"
+          icon={<DirectionsCarFilledIcon />}
         />
         <Button
-          type="submit"
+          onClick={handleSearch}
           variant="contained"
           disabled={
             searchCarMutation.isPending || !plateNumberInputValue.trim()
           }
+          loading={searchCarMutation.isPending}
         >
-          {searchCarMutation.isPending ? (
-            <CircularProgress size={24} color="inherit" />
-          ) : (
-            "Sprawdź"
-          )}
+          Sprawdź
         </Button>
-      </Box>
+      </div>
+
       {searchCarMutation.isError && (
-        <Typography color="error" sx={{ mt: 3, fontSize: "16px" }}>
+        <Text color={TextColor.Danger} className="mt-4">
           {searchCarMutation.error.message}
-        </Typography>
+        </Text>
       )}
       {searchCarMutation.isSuccess && searchCarMutation.data && (
-        <Paper
-          elevation={3}
-          sx={{
-            mt: 4,
-            p: 3,
-            width: "100%",
-            maxWidth: "450px",
-            textAlign: "center",
-            backgroundColor: "#f8f9fa",
-            borderRadius: "12px",
-            border: "1px solid #e0e0e0",
-          }}
-        >
-          <Box
-            className="d-flex align-items-center justify-content-center gap-2"
-            sx={{ mb: 2 }}
-          >
-            <Typography variant="h6">Pojazd odnaleziony</Typography>
-          </Box>
-
-          <Box
-            sx={{
-              textAlign: "left",
-              display: "flex",
-              flexDirection: "column",
-              gap: 1,
-            }}
-          >
-            <Typography variant="body1">
-              <strong>Numer rejestracyjny:</strong>{" "}
-              {searchCarMutation.data.plateNumber}
-            </Typography>
-            <Typography variant="body1">
-              <strong>Numer VIN:</strong> {searchCarMutation.data.vin}
-            </Typography>
-          </Box>
-
-          <Typography
-            variant="caption"
-            color="textSecondary"
-            sx={{ display: "block", mt: 2 }}
-          >
-            * Dane osobowe właściciela są ukryte ze względów prywatności.
-          </Typography>
-        </Paper>
+        <CarFound
+          plateNumber={searchCarMutation.data.plateNumber}
+          vin={searchCarMutation.data.vin}
+        />
       )}
+      <RoadMap />
     </div>
   );
 };

@@ -1,24 +1,24 @@
 import NavBar from "./layout/NavBar";
 import "./style/global.scss";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import LandingPageView from "./views/landing/LandingPageView";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { UserView } from "./views/UserView";
+import Page from "./layout/Page";
 
 const theme = createTheme({
   palette: {
     primary: {
-      light: "#33ab9f",
-      main: "#009688",
-      dark: "#00695f",
+      light: "#e08552",
+      main: "#d96d37",
+      dark: "#c45a27",
+
       contrastText: "#fff",
     },
     secondary: {
-      light: "#ffcf33",
-      main: "#ffc400",
-      dark: "#b28900",
-      contrastText: "#000",
+      light: "#8B85FF",
+      main: "#6c63ff",
+      dark: "#5148E0",
+      contrastText: "#fff",
     },
   },
 });
@@ -32,8 +32,7 @@ function App() {
         <ThemeProvider theme={theme}>
           <div className="page-wrapper">
             <NavBar />
-            <UserView />
-            <LandingPageView />
+            <Page />
           </div>
         </ThemeProvider>
       </QueryClientProvider>
