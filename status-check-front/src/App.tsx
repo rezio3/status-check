@@ -1,7 +1,6 @@
 import NavBar from "./layout/NavBar";
 import "./style/global.scss";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import "bootstrap/dist/css/bootstrap.min.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Page from "./layout/Page";
 

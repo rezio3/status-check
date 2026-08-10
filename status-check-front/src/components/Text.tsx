@@ -26,7 +26,7 @@ const Text: React.FC<TextTypeProps> = ({
   const combinedClasses = [color, className].filter(Boolean).join(" ");
 
   return (
-    <Tag style={style} className={combinedClasses || undefined}>
+    <Tag style={style} className={`${combinedClasses || undefined} mb-0`}>
       {children}
     </Tag>
   );

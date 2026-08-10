@@ -1,3 +1,21 @@
+@use "./colors" as c;
+
+$primary: c.$primary;
+$secondary: c.$secondary;
+$box-shadow: 0 0 10px -6px rgba(0, 0, 0, 1);
+$position-values: (
+  0: 0,
+  1: 4px,
+  2: 8px,
+  3: 16px,
+  4: 24px,
+  5: 32px,
+  50: 50%,
+  100: 100%,
+);
+
+@import "bootstrap/scss/bootstrap";
+
 .page-wrapper {
   display: flex;
   flex-direction: column;
@@ -8,4 +26,12 @@
   width: 100%;
   max-width: 1200px;
   padding: 0 24px;
+}
+
+.bg-dark60 {
+  background-color: rgba(0, 0, 0, 0.06);
+}
+
+.bg-dark80 {
+  background-color: rgba(0, 0, 0, 0.08);
 }
