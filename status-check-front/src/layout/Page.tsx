@@ -1,6 +1,6 @@
 import { useAuthUser } from "../hooks/useAuth";
 import LandingPageView from "../views/landing/LandingPageView";
-import { UserView } from "../views/UserView";
+import { UserView } from "../views/user/UserView";
 
 const Page = () => {
   const { data: authData, isLoading: isAuthLoading } = useAuthUser();

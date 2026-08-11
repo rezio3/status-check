@@ -30,7 +30,7 @@ const NavBar = () => {
   };
 
   return (
-    <div className="nav-bar">
+    <nav className="nav-bar">
       <div className="container d-flex justify-content-between align-items-center">
         <div className="d-flex flex-column align-items-center">
           <img src={carStatusLogo} alt="carLogo" />
@@ -62,7 +62,7 @@ const NavBar = () => {
         </div>
         <LoginModal isOpen={openLoginModal} close={handleCloseLoginModal} />
       </div>
-    </div>
+    </nav>
   );
 };
 

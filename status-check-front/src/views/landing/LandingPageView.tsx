@@ -6,9 +6,10 @@ import { apiFetch } from "../../api/client";
 import CarFound from "./components/CarFound";
 import Text, { TextColor } from "../../components/Text";
 import DirectionsCarFilledIcon from "@mui/icons-material/DirectionsCarFilled";
-import RoadMap from "./roadMap/RoadMap";
 import FeatureBadge from "./components/FeatureBadge";
 import TextInput from "../../components/TextInput";
+import HowItWorks from "./howItWorks/HowItWorks";
+import Perks from "./perks/Perks";
 
 type PublicCarData = {
   plateNumber: string;
@@ -25,8 +26,7 @@ const LandingPageView = () => {
       ),
   });
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSearch = () => {
     if (!plateNumberInputValue.trim()) return;
     searchCarMutation.mutate(plateNumberInputValue);
   };
@@ -73,7 +73,6 @@ const LandingPageView = () => {
             Sprawdź
           </Button>
         </div>
-
         {searchCarMutation.isError && (
           <Text color={TextColor.Danger} className="mt-4">
             {searchCarMutation.error.message}
@@ -86,7 +85,8 @@ const LandingPageView = () => {
           />
         )}
       </div>
-      <RoadMap />
+      <HowItWorks />
+      <Perks />
     </div>
   );
 };

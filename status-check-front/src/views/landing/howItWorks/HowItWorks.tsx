@@ -1,3 +1,4 @@
+import Header from "../../../components/Header";
 import Text from "../../../components/Text";
 import Step1Image from "./media/carStep1.svg";
 import Step2Image from "./media/carStep2.svg";
@@ -29,11 +30,11 @@ const STEPS: HowItWorksStepType[] = [
   },
 ];
 
-const RoadMap = () => {
+const HowItWorks = () => {
   return (
     <div
-      className="d-flex flex-wrap flex-md-nowrap justify-content-center gap-4 pb-5"
-      style={{ marginTop: 100 }}
+      className="d-flex flex-wrap flex-md-nowrap justify-content-center gap-4"
+      style={{ margin: "80px 0" }}
     >
       {STEPS.map((e, index) => (
         <div
@@ -44,7 +45,9 @@ const RoadMap = () => {
             className="rounded-circle bg-secondary p-3 text-white position-absolute top-3 start-3 d-flex justify-content-center align-items-center"
             style={{ width: 40, height: 40 }}
           >
-            <Text style={{ fontWeight: 600 }}>{index + 1}</Text>
+            <Text style={{ fontWeight: 600 }} as="span">
+              {index + 1}
+            </Text>
           </div>
           <div
             style={{ height: 150 }}
@@ -53,13 +56,13 @@ const RoadMap = () => {
             <img src={e.img} alt={e.label} width={150} />
           </div>
           <div className="d-flex flex-column align-items-center gap-1">
-            <Text
-              as="span"
+            <Header
+              as="h2"
               className="mb-2 text-center"
               style={{ fontWeight: 700, fontSize: 18 }}
             >
               {e.label}
-            </Text>
+            </Header>
             <Text
               as="span"
               className="mb-2 text-center"
@@ -74,4 +77,4 @@ const RoadMap = () => {
   );
 };
 
-export default RoadMap;
+export default HowItWorks;

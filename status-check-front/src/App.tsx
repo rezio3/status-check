@@ -3,6 +3,7 @@ import "./style/global.scss";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Page from "./layout/Page";
+import Footer from "./layout/Footer";
 
 const theme = createTheme({
   palette: {
@@ -32,6 +33,7 @@ function App() {
           <div className="page-wrapper">
             <NavBar />
             <Page />
+            <Footer />
           </div>
         </ThemeProvider>
       </QueryClientProvider>
