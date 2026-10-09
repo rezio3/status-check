@@ -8,7 +8,7 @@ const SideBar = ({ userName }: SideBarPropsType) => {
   console.log(userName);
   return (
     <div
-      className=""
+      className="d-flex flex-column"
       style={{ width: 220, borderRight: "1px solid rgba(0,0,0,0.2)" }}
     >
       <Text as="span" style={{ fontSize: 14 }}>
