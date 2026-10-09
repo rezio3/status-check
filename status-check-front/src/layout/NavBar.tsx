@@ -5,7 +5,6 @@ import { LoginModal } from "../views/loginModal/LoginModal";
 import { useState } from "react";
 import { useAuthUser, useLogoutMutation } from "../hooks/useAuth";
 import carStatusLogo from "../assets/logoCarStatus.svg";
-import Text from "../components/Text";
 
 const NavBar = () => {
   const [openLoginModal, setOpenLoginModal] = useState(false);
@@ -43,8 +42,8 @@ const NavBar = () => {
             <CircularProgress size={24} />
           ) : isAuthenticated ? (
             <Button
-              variant="outlined"
-              color="inherit"
+              variant="contained"
+              color="primary"
               onClick={handleLogout}
               disabled={logoutMutation.isPending}
             >
