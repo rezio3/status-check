@@ -1,11 +1,19 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiFetch } from "../api/client";
 
-interface AuthCredentials {
+type AuthCredentials = {
   email: string;
   password: string;
   name?: string;
-}
+};
+
+export type AuthDataType = {
+  authenticated: boolean;
+  user: {
+    uid: string;
+    email: string;
+  };
+};
 
 export const useRegisterMutation = () => {
   return useMutation({
@@ -36,7 +44,7 @@ export const useLoginMutation = () => {
 export const useAuthUser = () => {
   return useQuery({
     queryKey: ["authUser"],
-    queryFn: () => apiFetch<{ authenticated: boolean; user?: any }>("/auth/me"),
+    queryFn: () => apiFetch<AuthDataType>("/auth/me"),
     retry: false,
     staleTime: 1000 * 60 * 5,
   });

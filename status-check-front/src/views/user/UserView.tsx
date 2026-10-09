@@ -1,41 +1,25 @@
-import { useState } from "react";
-import { useAddCar, useUserCars } from "../../hooks/useCars";
 import Header from "../../components/Header";
 import SideBar from "./sideBar/SideBar";
+import Dashboard from "./dashboard/Dashboard";
+import type { AuthDataType } from "../../hooks/useAuth";
 
 type UserViewPropsType = {
-  authData: any;
+  authData: AuthDataType;
   isAuthLoading: boolean;
 };
 
 export const UserView = ({ authData, isAuthLoading }: UserViewPropsType) => {
-  const [plateNumber, setPlateNumber] = useState("");
-
-  const isAuthenticated = authData?.authenticated;
   const userEmail = authData?.user?.email;
 
-  const { data: cars = [], isLoading: isCarsLoading } =
-    useUserCars(isAuthenticated);
-
-  const addCarMutation = useAddCar(() => setPlateNumber(""));
-  console.log(isCarsLoading);
-  console.log(userEmail);
-  const handleAddCar = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!plateNumber.trim()) return;
-    addCarMutation.mutate(plateNumber);
-  };
-  console.log(handleAddCar);
   if (isAuthLoading) {
     // DO POPRAWY
     return <Header as="h2">Czeaj</Header>;
   }
-  console.log(cars);
 
   return (
-    <div className="w-100 d-flex" style={{ flex: 1 }}>
+    <div className="container w-100 d-flex my-5" style={{ flex: 1 }}>
       <SideBar userName={userEmail} />
-      dsf sdfsd
+      <Dashboard authData={authData} />
     </div>
   );
 };
