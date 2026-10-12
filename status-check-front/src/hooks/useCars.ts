@@ -2,13 +2,14 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "../utils/queryKeys";
 import { apiFetch } from "../api/client";
 
-type Car = {
+export type Car = {
   id: string;
   plateNumber: string;
   vin: string;
   ownerName: string;
   createdAt: string;
 };
+
 export const useUserCars = (enabled: boolean) => {
   return useQuery<Car[]>({
     queryKey: queryKeys.userCarList,
@@ -17,7 +18,7 @@ export const useUserCars = (enabled: boolean) => {
   });
 };
 
-export const useAddCar = (onSuccessCallback?: () => void) => {
+export const useAddCar = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -28,7 +29,6 @@ export const useAddCar = (onSuccessCallback?: () => void) => {
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.userCarList });
-      if (onSuccessCallback) onSuccessCallback();
     },
   });
 };
