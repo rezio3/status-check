@@ -1,11 +1,12 @@
 import { Response } from "express";
 import { db } from "../config/firebase";
 import { AuthenticatedRequest } from "../middleware/authMiddleware";
+import { CarStatus } from "../types/carTypes";
 
 export const addCar = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const userId = req.user?.uid;
-    const { plateNumber } = req.body;
+    const { plateNumber, brand, model, year, vin, phone } = req.body;
 
     if (!plateNumber) {
       return res
@@ -21,27 +22,46 @@ export const addCar = async (req: AuthenticatedRequest, res: Response) => {
 
     const formattedPlate = plateNumber.toUpperCase().trim();
 
-    const carRef = await db
-      .collection("users")
-      .doc(userId)
-      .collection("cars")
-      .add({
-        plateNumber: formattedPlate,
-        vin: `VIN-${Math.random().toString(36).substring(2, 10).toUpperCase()}`,
-        ownerName: "Jan Kowalski",
-        createdAt: new Date(),
-      });
+    const carsRef = await db.collection("users").doc(userId).collection("cars");
 
-    res.status(201).json({
+    const lastQueuedCar = await carsRef
+      .where("status", "==", CarStatus.Queued)
+      .orderBy("order", "desc")
+      .limit(1)
+      .get();
+
+    const lastOrder = lastQueuedCar.empty
+      ? 0
+      : (lastQueuedCar.docs[0].data().order ?? 0);
+
+    const newOrder = lastOrder + 1;
+
+    const carRef = await carsRef.add({
+      plateNumber: formattedPlate,
+      brand,
+      model,
+      year,
+      vin,
+      phone,
+      status: CarStatus.Queued,
+      order: newOrder,
+      createdAt: new Date(),
+    });
+
+    return res.status(201).json({
       message: "Auto dodane pomyślnie!",
       car: {
         id: carRef.id,
         plateNumber: formattedPlate,
+        status: CarStatus.Queued,
+        order: newOrder,
       },
     });
   } catch (error: any) {
     console.error("Błąd dodawania auta:", error);
-    res.status(500).json({ error: "Błąd serwera podczas dodawania auta." });
+    return res
+      .status(500)
+      .json({ error: "Błąd serwera podczas dodawania auta." });
   }
 };
 

@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "../utils/queryKeys";
 import { apiFetch } from "../api/client";
+import type { CarFormValues } from "../views/user/modals/AddOrEditCarModal";
 
 export type Car = {
   id: string;
@@ -22,10 +23,10 @@ export const useAddCar = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (newPlate: string) =>
+    mutationFn: (newCar: CarFormValues) =>
       apiFetch("/cars", {
         method: "POST",
-        body: JSON.stringify({ plateNumber: newPlate }),
+        body: JSON.stringify(newCar),
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.userCarList });

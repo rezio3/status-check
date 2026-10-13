@@ -33,6 +33,7 @@ const Perks = () => {
         <div
           className="d-flex align-items-center gap-3"
           style={{ maxWidth: 280 }}
+          key={perk.header}
         >
           {perk.icon}
           <div className="d-flex flex-column gap-1">

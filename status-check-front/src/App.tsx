@@ -4,6 +4,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import Page from "./layout/Page";
 import Footer from "./layout/Footer";
+import { NotificationProvider } from "./providers/NotificationProvider";
 
 const theme = createTheme({
   palette: {
@@ -30,11 +31,13 @@ function App() {
     <>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider theme={theme}>
-          <div className="page-wrapper">
-            <NavBar />
-            <Page />
-            <Footer />
-          </div>
+          <NotificationProvider>
+            <div className="page-wrapper">
+              <NavBar />
+              <Page />
+              <Footer />
+            </div>
+          </NotificationProvider>
         </ThemeProvider>
       </QueryClientProvider>
     </>

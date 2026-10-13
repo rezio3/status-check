@@ -3,7 +3,6 @@ import { useAddCar, useUserCars } from "../../../hooks/useCars";
 import { useState } from "react";
 import type { AuthDataType } from "../../../hooks/useAuth";
 import Text, { TextColor } from "../../../components/Text";
-import { getCarListMockup } from "../../../utils/carsMockup";
 import CarElement from "../components/CarElement/CarElement";
 import AddIcon from "@mui/icons-material/Add";
 import AddOrEditCarModal from "../modals/AddOrEditCarModal";
@@ -15,15 +14,11 @@ type DashboardPropsType = {
 const Dashboard = ({ authData }: DashboardPropsType) => {
   const [isAddCardModalOpen, setIsAddCarModalOpen] = useState(false);
   const isAuthenticated = authData?.authenticated;
+
   const { data: cars = [], isLoading: isCarsLoading } =
     useUserCars(isAuthenticated);
   const addCarMutation = useAddCar();
-
   console.log(isCarsLoading);
-  console.log(cars);
-  const carList = getCarListMockup(cars);
-  console.log(carList);
-
   return (
     <div className="w-100 d-flex flex-column align-items-start gap-3 ms-4">
       <Button
@@ -45,8 +40,8 @@ const Dashboard = ({ authData }: DashboardPropsType) => {
         </Text>
       )}
       <div className="d-flex flex-column gap-2 w-100">
-        {carList.map((car) => (
-          <CarElement carData={car} />
+        {cars.map((car) => (
+          <CarElement carData={car} key={car.id} />
         ))}
       </div>
       <AddOrEditCarModal
