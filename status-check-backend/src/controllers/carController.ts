@@ -9,34 +9,43 @@ export const addCar = async (req: AuthenticatedRequest, res: Response) => {
     const { plateNumber, brand, model, year, vin, phone } = req.body;
 
     if (!plateNumber) {
-      return res
-        .status(400)
-        .json({ error: "Numer rejestracyjny jest wymagany." });
+      return res.status(400).json({
+        error: "Numer rejestracyjny jest wymagany.",
+      });
     }
 
     if (!userId) {
-      return res
-        .status(401)
-        .json({ error: "Brak identyfikatora użytkownika." });
+      return res.status(401).json({
+        error: "Brak identyfikatora użytkownika.",
+      });
     }
 
     const formattedPlate = plateNumber.toUpperCase().trim();
+    const carsRef = db.collection("users").doc(userId).collection("cars");
 
-    const carsRef = await db.collection("users").doc(userId).collection("cars");
+    const snapshot = await carsRef.get();
 
-    const lastQueuedCar = await carsRef
-      .where("status", "==", CarStatus.Queued)
-      .orderBy("order", "desc")
-      .limit(1)
-      .get();
+    const carsWithOrder = snapshot.docs
+      .filter((doc) => {
+        const order = doc.data().order;
+        return order !== null && order !== undefined;
+      })
+      .sort((a, b) => {
+        return a.data().order - b.data().order;
+      });
 
-    const lastOrder = lastQueuedCar.empty
-      ? 0
-      : (lastQueuedCar.docs[0].data().order ?? 0);
+    const batch = db.batch();
 
-    const newOrder = lastOrder + 1;
+    carsWithOrder.forEach((doc, index) => {
+      batch.update(doc.ref, {
+        order: index + 1,
+      });
+    });
 
-    const carRef = await carsRef.add({
+    const newOrder = carsWithOrder.length + 1;
+    const carRef = carsRef.doc();
+
+    batch.set(carRef, {
       plateNumber: formattedPlate,
       brand,
       model,
@@ -47,6 +56,8 @@ export const addCar = async (req: AuthenticatedRequest, res: Response) => {
       order: newOrder,
       createdAt: new Date(),
     });
+
+    await batch.commit();
 
     return res.status(201).json({
       message: "Auto dodane pomyślnie!",
@@ -59,9 +70,10 @@ export const addCar = async (req: AuthenticatedRequest, res: Response) => {
     });
   } catch (error: any) {
     console.error("Błąd dodawania auta:", error);
-    return res
-      .status(500)
-      .json({ error: "Błąd serwera podczas dodawania auta." });
+
+    return res.status(500).json({
+      error: "Błąd serwera podczas dodawania auta.",
+    });
   }
 };
 

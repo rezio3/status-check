@@ -1,25 +1,40 @@
-import Header from "../../../../components/Header";
-import Text from "../../../../components/Text";
-import type { RefactoredCar } from "../../../../utils/carsMockup";
+import { IconButton } from "@mui/material";
+import type { Car } from "../../../../hooks/useCars";
+import CarBasicDetails from "./CarBasicDetails";
+import DeleteIcon from "@mui/icons-material/Delete";
 
-const CarElement = ({ carData }: { carData: RefactoredCar }) => {
+const CarElement = ({ carData }: { carData: Car }) => {
   return (
-    <div className="position-relative d-flex flex-column bg-dark40 w-100 rounded-3 p-4 ps-5 overflow-hidden">
-      <div
-        className="position-absolute bg-primary text-white px-2 py-1"
-        style={{ top: 0, left: 0, borderBottomRightRadius: 8 }}
-      >
-        {carData.order}
+    <div className="position-relative bg-dark40 w-100 rounded-3 p-4 ps-5 overflow-hidden">
+      <BadgeOrderAbsolute order={carData.order} />
+      <div className="d-flex align-items-center justify-content-between">
+        <CarBasicDetails carData={carData} />
+        <div>
+          <IconButton aria-label="delete" color="primary">
+            <DeleteIcon />
+          </IconButton>
+        </div>
       </div>
-      <Header as="h5" className="mb-1">
-        {carData.brand} {carData.model} {carData.year}
-      </Header>
-      <Header as="h6" className="mb-1">
-        {carData.plateNumber}
-      </Header>
-      <Text>{carData.ownerName}</Text>
+      <div className="my-2 " style={{ borderTop: `1px solid black` }}></div>
     </div>
   );
 };
 
 export default CarElement;
+
+type BadgeOrderAbsolutePropsType = {
+  order: number;
+};
+
+const BadgeOrderAbsolute: React.FC<BadgeOrderAbsolutePropsType> = ({
+  order,
+}) => {
+  return (
+    <div
+      className="position-absolute bg-primary text-white px-2 py-1"
+      style={{ top: 0, left: 0, borderBottomRightRadius: 8 }}
+    >
+      {order}
+    </div>
+  );
+};

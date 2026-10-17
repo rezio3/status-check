@@ -14,7 +14,7 @@ const Header: React.FC<HeaderTypeProps> = ({
   className = "",
 }) => {
   return (
-    <Tag style={style} className={className}>
+    <Tag style={style} className={`m-0 ${className}`}>
       {children}
     </Tag>
   );

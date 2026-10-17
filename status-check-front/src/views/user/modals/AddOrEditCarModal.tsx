@@ -24,7 +24,7 @@ const AddOrEditCarModal = ({
   close,
   addCarMutation,
 }: AddOrEditCarModalPropsType) => {
-  const { control, handleSubmit } = useForm<CarFormValues>({
+  const { control, handleSubmit, reset } = useForm<CarFormValues>({
     defaultValues: {
       plateNumber: "",
       brand: "",
@@ -41,6 +41,7 @@ const AddOrEditCarModal = ({
       await addCarMutation.mutateAsync(data);
 
       notify("Dodano pojazd", "success");
+      reset();
       close();
     } catch {
       notify("Coś poszło nie tak. Spróbuj ponownie.", "danger");

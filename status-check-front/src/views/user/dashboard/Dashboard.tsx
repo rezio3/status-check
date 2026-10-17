@@ -19,6 +19,7 @@ const Dashboard = ({ authData }: DashboardPropsType) => {
     useUserCars(isAuthenticated);
   const addCarMutation = useAddCar();
   console.log(isCarsLoading);
+  console.log(cars);
   return (
     <div className="w-100 d-flex flex-column align-items-start gap-3 ms-4">
       <Button
