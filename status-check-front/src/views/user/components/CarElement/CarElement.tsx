@@ -1,24 +1,21 @@
-import { IconButton } from "@mui/material";
 import type { Car } from "../../../../hooks/useCars";
 import CarBasicDetails from "./CarBasicDetails";
-import DeleteIcon from "@mui/icons-material/Delete";
 import Divider from "../../../../components/Divider";
 import CarActionButtons from "./CarActionButtons";
+import { getCarStatusLabel } from "../../../../utils/carStatus";
 
 const CarElement = ({ carData }: { carData: Car }) => {
   return (
     <div className="position-relative bg-dark40 w-100 rounded-3 p-4 ps-5 overflow-hidden">
-      <BadgeOrderAbsolute order={carData.order} />
-      <div className="d-flex align-items-center justify-content-between">
+      {carData.order && <BadgeAbsolute content={carData.order} />}
+      {!carData.order && (
+        <BadgeAbsolute content={getCarStatusLabel(carData.status)} />
+      )}
+      <div className={`d-flex align-items-center ${!carData.order && "mt-3"}`}>
         <CarBasicDetails carData={carData} />
-        <div>
-          <IconButton aria-label="delete" color="primary">
-            <DeleteIcon />
-          </IconButton>
-        </div>
       </div>
       <Divider variant="top" className="my-2" />
-      <CarActionButtons />
+      <CarActionButtons carData={carData} />
     </div>
   );
 };
@@ -26,18 +23,16 @@ const CarElement = ({ carData }: { carData: Car }) => {
 export default CarElement;
 
 type BadgeOrderAbsolutePropsType = {
-  order: number;
+  content: number | string;
 };
 
-const BadgeOrderAbsolute: React.FC<BadgeOrderAbsolutePropsType> = ({
-  order,
-}) => {
+const BadgeAbsolute: React.FC<BadgeOrderAbsolutePropsType> = ({ content }) => {
   return (
     <div
       className="position-absolute bg-primary text-white px-2 py-1"
-      style={{ top: 0, left: 0, borderBottomRightRadius: 8 }}
+      style={{ top: 0, left: 0, borderBottomRightRadius: 8, fontSize: 14 }}
     >
-      {order}
+      {content}
     </div>
   );
 };

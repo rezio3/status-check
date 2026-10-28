@@ -1,7 +1,7 @@
 import { Response } from "express";
 import { db } from "../config/firebase";
 import { AuthenticatedRequest } from "../middleware/authMiddleware";
-import { CarStatus } from "../types/carTypes";
+import { CarStatus, isCarStatus } from "../types/carTypes";
 
 export const addCar = async (req: AuthenticatedRequest, res: Response) => {
   try {
@@ -73,6 +73,119 @@ export const addCar = async (req: AuthenticatedRequest, res: Response) => {
 
     return res.status(500).json({
       error: "Błąd serwera podczas dodawania auta.",
+    });
+  }
+};
+
+export const updateCarStatus = async (
+  req: AuthenticatedRequest,
+  res: Response,
+) => {
+  try {
+    const userId = req.user?.uid;
+    const { carId } = req.params;
+    const { status } = req.body;
+
+    if (!userId) {
+      return res.status(401).json({
+        error: "Brak identyfikatora użytkownika.",
+      });
+    }
+
+    if (!carId) {
+      return res.status(400).json({
+        error: "Brak identyfikatora pojazdu.",
+      });
+    }
+
+    if (!isCarStatus(status)) {
+      return res.status(400).json({
+        error: "Nieprawidłowy status pojazdu.",
+        allowedStatuses: Object.values(CarStatus),
+      });
+    }
+
+    const carsRef = db.collection("users").doc(userId).collection("cars");
+
+    const carRef = carsRef.doc(carId);
+
+    const updatedCar = await db.runTransaction(async (transaction) => {
+      // Pobieramy wszystkie auta w ramach transakcji,
+      // aby prawidłowo przeliczyć kolejkę.
+      const snapshot = await transaction.get(carsRef);
+
+      const carDoc = snapshot.docs.find((doc) => doc.id === carId);
+
+      if (!carDoc) {
+        throw new Error("CAR_NOT_FOUND");
+      }
+
+      const currentCar = carDoc.data();
+      const currentStatus = currentCar.status;
+
+      const queuedCars = snapshot.docs
+        .filter((doc) => {
+          const data = doc.data();
+
+          return (
+            data.status === CarStatus.Queued &&
+            data.order !== null &&
+            data.order !== undefined &&
+            doc.id !== carId
+          );
+        })
+        .sort((a, b) => {
+          return a.data().order - b.data().order;
+        });
+
+      if (status === CarStatus.Queued) {
+        // Jeżeli auto wraca do kolejki, trafia na jej koniec.
+        const newQueue = [...queuedCars, carDoc];
+
+        newQueue.forEach((doc, index) => {
+          transaction.update(doc.ref, {
+            status: CarStatus.Queued,
+            order: index + 1,
+          });
+        });
+      } else {
+        // Auto opuszcza kolejkę — nie ma już numeru.
+        transaction.update(carRef, {
+          status,
+          order: null,
+        });
+
+        // Przeliczamy kolejkę pozostałych aut.
+        queuedCars.forEach((doc, index) => {
+          transaction.update(doc.ref, {
+            order: index + 1,
+          });
+        });
+      }
+
+      return {
+        id: carId,
+        plateNumber: currentCar.plateNumber,
+        status,
+        order: status === CarStatus.Queued ? queuedCars.length + 1 : null,
+      };
+    });
+
+    return res.status(200).json({
+      message: "Status pojazdu został zmieniony.",
+      car: updatedCar,
+    });
+  } catch (error: unknown) {
+    if (error instanceof Error && error.message === "CAR_NOT_FOUND") {
+      return res.status(404).json({
+        error: "Nie znaleziono pojazdu.",
+      });
+    }
+
+    console.error("Błąd zmiany statusu pojazdu:", error);
+
+    return res.status(500).json({
+      error: "Błąd serwera podczas zmiany statusu.",
     });
   }
 };

@@ -2,15 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { queryKeys } from "../utils/queryKeys";
 import { apiFetch } from "../api/client";
 import type { CarFormValues } from "../views/user/modals/AddOrEditCarModal";
-
-export const CarStatus = {
-  WaitingForParts: "waitingForParts",
-  ReadyToCollect: "readyToCollect",
-  InRepair: "inRepair",
-  Queued: "queued",
-} as const;
-
-export type CarStatus = (typeof CarStatus)[keyof typeof CarStatus];
+import type { CarStatus } from "../utils/carStatus";
 
 export type Car = {
   plateNumber: string;
@@ -21,7 +13,7 @@ export type Car = {
   vin?: string;
   phone?: string;
   status: CarStatus;
-  order: number;
+  order: number | null;
 };
 
 export const useUserCars = (enabled: boolean) => {
@@ -43,6 +35,29 @@ export const useAddCar = () => {
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.userCarList });
+    },
+  });
+};
+
+type UpdateCarStatusInput = {
+  carId: string;
+  status: CarStatus;
+};
+
+export const useUpdateCarStatus = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ carId, status }: UpdateCarStatusInput) =>
+      apiFetch(`/cars/${carId}/status`, {
+        method: "PATCH",
+        body: JSON.stringify({ status }),
+      }),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.userCarList,
+      });
     },
   });
 };
