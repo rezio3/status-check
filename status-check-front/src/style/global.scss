@@ -18,6 +18,10 @@
   )
 );
 
+:root {
+  --divider-color: rgba(0, 0, 0, 0.2);
+}
+
 .page-wrapper {
   display: flex;
   flex-direction: column;

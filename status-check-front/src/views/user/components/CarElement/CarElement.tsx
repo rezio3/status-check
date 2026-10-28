@@ -2,6 +2,8 @@ import { IconButton } from "@mui/material";
 import type { Car } from "../../../../hooks/useCars";
 import CarBasicDetails from "./CarBasicDetails";
 import DeleteIcon from "@mui/icons-material/Delete";
+import Divider from "../../../../components/Divider";
+import CarActionButtons from "./CarActionButtons";
 
 const CarElement = ({ carData }: { carData: Car }) => {
   return (
@@ -15,7 +17,8 @@ const CarElement = ({ carData }: { carData: Car }) => {
           </IconButton>
         </div>
       </div>
-      <div className="my-2 " style={{ borderTop: `1px solid black` }}></div>
+      <Divider variant="top" className="my-2" />
+      <CarActionButtons />
     </div>
   );
 };
